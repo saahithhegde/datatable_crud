@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Theme Made By www.w3schools.com -->
+  <title>ShopOnline</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script src="imageMapResizer.min.js"></script>
+  <link rel="stylesheet" href="main.css">
+  <style>
+    #OrderTable {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#OrderTable td, #OrderTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#OrderTable tr:nth-child(even){background-color: #f2f2f2;}
+
+#OrderTable tr:hover {background-color: #ddd;}
+
+#OrderTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #f4511e;
+  color: white;
+}
+  </style>
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="index.html">SHOP ONLINE</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="profile.html">PROFILE</a></li>
+        <li><a href="previous.html">PREVIOUS ORDERS</a></li>
+        <li><a href="shopping.html">SHOPPING LIST</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<br>
+<div class="container-fluid">
+  <h1>My Shopping List</h1>
+  <p>*Double click on cell to update</p>
+</div>
+<div class="container-fluid" id="container"></div>
+
+<script>
+  var MyApp = new function () {
+
+        this.item_Table = [
+            { ID: '1', Item_name: 'Computer Architecture', Quantity: 'Computers', Requiered_Date: 125.60 },
+            { ID: '2', Item_name: 'Asp.Net 4 Blue Book', Quantity: 'Programming', Requiered_Date: 56.00 },
+            { ID: '3', Item_name: 'Popular Science', Quantity: 'Science', Requiered_Date: 210.40 }
+        ]
+//***********************************************************************************//
+        this.col = [];
+
+        this.createTable = function () {
+
+        
+            for (var i = 0; i < this.item_Table.length; i++) {
+                for (var key in this.item_Table[i]) {
+                    if (this.col.indexOf(key) === -1) {
+                        this.col.push(key);
+                    }
+                }
+            }
+
+         
+            var table = document.createElement('table');
+            table.setAttribute('id', 'OrderTable');    
+
+            var header_tr = table.insertRow(-1);               
+
+            for (var h = 0; h < this.col.length; h++) {
+              
+                var th = document.createElement('th');
+                th.innerHTML = this.col[h].replace('_', ' ');
+                header_tr.appendChild(th);
+            }
+//***********************************************************************************//
+     
+            for (var i = 0; i < this.item_Table.length; i++) {
+
+                tr = table.insertRow(-1);           
+
+                for (var j = 0; j < this.col.length; j++) {
+                    var tabCell = tr.insertCell(-1);
+                    tabCell.innerHTML = this.item_Table[i][this.col[j]];
+                    if(j>=1){
+                    tabCell.setAttribute("id",i+"."+j);
+                    tabCell.setAttribute('ondblclick','MyApp.updatefunction(this.id)');
+                }
+                }
+                this.updatefunction = function(id){
+                var clcikedid=id;
+                var cellvalue=document.getElementById(clcikedid);
+                var exisitingvalue=cellvalue.innerText;
+                var updateInp = document.createElement('input');
+                updateInp.setAttribute('type', 'text');
+                updateInp.setAttribute('value',cellvalue.innerText);
+                cellvalue.innerText="";
+                cellvalue.appendChild(updateInp);
+                var saveBtn = document.createElement('input');
+                saveBtn.setAttribute('type', 'button');
+                saveBtn.setAttribute('value', 'save');
+                saveBtn.setAttribute('style', 'background-color:#7ed430;');
+                saveBtn.setAttribute('onclick', 'MyApp.Update('+clcikedid+')');
+                cellvalue.appendChild(saveBtn);
+
+            }
+
+
+//***********************************************************************************//
+                this.td = document.createElement('td');
+                tr.appendChild(this.td);
+                var btDelete = document.createElement('input');
+                btDelete.setAttribute('type', 'button');   
+                btDelete.setAttribute('value', 'Delete');
+                btDelete.setAttribute('style', 'background-color:#840e0a;');
+                btDelete.setAttribute('onclick', 'MyApp.Delete(this)');  
+                this.td.appendChild(btDelete);
+            }
+
+        tr = table.insertRow(-1);          
+
+            for (var j = 0; j < this.col.length; j++) {
+                var newCell = tr.insertCell(-1);
+                if(j>=1){
+                var tBox = document.createElement('input');          
+                tBox.setAttribute('type', 'text');
+                tBox.setAttribute('value', '');
+                if(j==1){
+                tBox.setAttribute('placeholder', 'input item name');
+              }
+                if(j==2){
+                tBox.setAttribute('placeholder', 'input quantity');
+              }
+                if(j==3){
+                tBox.setAttribute('placeholder', 'input date');
+              }
+                newCell.appendChild(tBox);
+                }
+            }
+
+            this.td = document.createElement('td');
+            tr.appendChild(this.td);
+
+            var btNew = document.createElement('input');
+
+            btNew.setAttribute('type', 'button');      
+            btNew.setAttribute('value', 'Insert');
+            btNew.setAttribute('id', 'New' + i);
+            btNew.setAttribute('style', 'background-color:#7ed430;');
+            btNew.setAttribute('onclick', 'MyApp.Insert(this)');   
+            this.td.appendChild(btNew);
+
+            var div = document.getElementById('container');
+            div.innerHTML = '';
+            div.appendChild(table); 
+        };
+//***********************************************************************************//
+            this.Insert = function (oButton) {
+            var activeRow = oButton.parentNode.parentNode.rowIndex;
+            var tab = document.getElementById('OrderTable').rows[activeRow];
+            var obj = {};
+
+            for (i = 1; i < this.col.length; i++) {
+                var td = tab.getElementsByTagName("td")[i];
+                if (td.childNodes[0].getAttribute('type') == 'text'){
+                    var txtVal = td.childNodes[0].value;
+                    if (txtVal != '') {
+                        obj[this.col[i]] = txtVal.trim();
+                    }
+                    else {
+                        obj = '';
+                        alert('all fields are compulsory');
+                        break;
+                    }
+                }
+            }
+            obj[this.col[0]] = this.item_Table.length + 1;     // NEW ID.
+
+            if (Object.keys(obj).length > 0) {      
+                this.item_Table.push(obj);             
+                               
+            }
+            this.createTable();  
+        }
+            this.Update =function (id) {
+            
+                   var id_key=id.toString().split(".");
+                var newval=document.getElementById(id).firstChild.value
+                var idv=id_key[0];
+                var idc=id_key[1];
+                for (var i = 0; i < this.item_Table.length; i++){
+                    if(i==idv)
+                    for (var j = 0; j < this.col.length; j++) {
+                        if(j==idc)
+                            this.item_Table[i][this.col[j]]=newval;
+                            document.getElementById(id).innerHTML=newval;
+
+                    }
+
+                }
+                this.createTable();
+            }
+//***********************************************************************************//        
+            this.Delete = function (oButton) {
+            var activeRow = oButton.parentNode.parentNode.rowIndex;
+            this.item_Table.splice((activeRow - 1), 1);   
+            this.createTable();   
+//***********************************************************************************//                    
+         
+    };
+}
+MyApp.createTable();
+  </script>
